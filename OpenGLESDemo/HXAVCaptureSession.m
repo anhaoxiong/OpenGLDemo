@@ -392,7 +392,7 @@
 }
 
 
--(void)sampleRGB32ToRGB32Buffer:(CMSampleBufferRef)sampleBuffer{
+-(void)sample32BGRATo32BGRABuffer:(CMSampleBufferRef)sampleBuffer{
     
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     
@@ -401,7 +401,7 @@
     size_t perRowLen    = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0);
     unsigned char *address  = CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
     
-    size_t bufferWidth = CVPixelBufferGetWidth(imageBuffer);
+    size_t bufferWidth  = CVPixelBufferGetWidth(imageBuffer);
     size_t bufferHeight = CVPixelBufferGetHeight(imageBuffer);
     if (bufferWidth != _width || bufferHeight != _height) {
         _width   = bufferWidth;
@@ -459,7 +459,7 @@
                 break;
                 
             case kCVPixelFormatType_32BGRA: {
-                [self sampleRGB32ToRGB32Buffer:sampleBuffer];
+                [self sample32BGRATo32BGRABuffer:sampleBuffer];
                 [self.delegate videoDataCallBack:_yuv420buffer len:(int)_width*(int)_height*4 width:(int)_width height:(int)_height];
             }
             default:

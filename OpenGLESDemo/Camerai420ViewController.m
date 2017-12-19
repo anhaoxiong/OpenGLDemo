@@ -118,16 +118,20 @@ HXAVCaptureSessionDelegate
     GLushort indices[6] = {0, 1, 2, 1, 2, 3};
     
     if (self.isFit) {
-        int drawableWidth   = self.drawView.drawableWidth;
-        int drawableHeight  = self.drawView.drawableHeight;
-        float value = (float)width / (float)height;
-        float value2 = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
-        if (value > value2) {
+        GLint drawableWidth   = (GLint)self.drawView.drawableWidth;
+        GLint drawableHeight  = (GLint)self.drawView.drawableHeight;
+        float divData = (float)width / (float)height;
+        float divView = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
+        if (divData > divView) {
             drawableHeight = drawableWidth * (CGFloat)height / (CGFloat)width;
         } else {
             drawableWidth = drawableHeight * (CGFloat)width / (CGFloat)height;
         }
-        glViewport((self.drawView.drawableWidth - drawableWidth)/2, (self.drawView.drawableHeight - drawableHeight)/2, (GLsizei)drawableWidth, (GLsizei)drawableHeight);
+        
+        glViewport((GLint)(self.drawView.drawableWidth - drawableWidth)/2,
+                   (GLint)(self.drawView.drawableHeight - drawableHeight)/2,
+                   (GLsizei)drawableWidth,
+                   (GLsizei)drawableHeight);
     } else {
         glViewport(0, 0, (GLsizei)self.drawView.drawableWidth, (GLsizei)self.drawView.drawableHeight);
     }

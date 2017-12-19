@@ -114,16 +114,21 @@ HXAVCaptureSessionDelegate
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
     
     if (self.isFit) {
-        int drawableWidth   = self.drawView.drawableWidth;
-        int drawableHeight  = self.drawView.drawableHeight;
-        float value = (float)width / (float)height;
-        float value2 = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
-        if (value > value2) {
+        
+        GLint drawableWidth   = (GLint)self.drawView.drawableWidth;
+        GLint drawableHeight  = (GLint)self.drawView.drawableHeight;
+        float divData = (float)width / (float)height;
+        float divView = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
+        if (divData > divView) {
             drawableHeight = drawableWidth * (CGFloat)height / (CGFloat)width;
         } else {
             drawableWidth = drawableHeight * (CGFloat)width / (CGFloat)height;
         }
-        glViewport((self.drawView.drawableWidth - drawableWidth)/2, (self.drawView.drawableHeight - drawableHeight)/2, (GLsizei)drawableWidth, (GLsizei)drawableHeight);
+        
+        glViewport((GLint)(self.drawView.drawableWidth - drawableWidth)/2,
+                   (GLint)(self.drawView.drawableHeight - drawableHeight)/2,
+                   (GLsizei)drawableWidth,
+                   (GLsizei)drawableHeight);
     } else {
         glViewport(0, 0, (GLsizei)self.drawView.drawableWidth, (GLsizei)self.drawView.drawableHeight);
     }
@@ -142,7 +147,6 @@ HXAVCaptureSessionDelegate
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[0]);
-    
     glUniform1i(self.sampleVarIndex, 0);
     
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
@@ -156,10 +160,9 @@ HXAVCaptureSessionDelegate
     glGenTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
     for (int i = 0; i < ARRAY_SIZE(_textureIDArray); i ++) {
         glBindTexture(GL_TEXTURE_2D, _textureIDArray[i]);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    
 }
 
 - (int)setupOpenGL {
@@ -173,7 +176,7 @@ HXAVCaptureSessionDelegate
 }
 
 - (void)setupSession {
-    self.captureSession = [[HXAVCaptureSession alloc] initWithPreview:nil delegate:self pixelFormatType:kCVPixelFormatType_32BGRA preset:AVCaptureSessionPreset640x480 frameRate:25];
+    self.captureSession = [[HXAVCaptureSession alloc] initWithPreview:nil delegate:self pixelFormatType:kCVPixelFormatType_32BGRA preset:AVCaptureSessionPreset1920x1080 frameRate:25];
 }
 
 - (void)videoDataCallBack:(unsigned char *)pbuffer len:(int)bufferLen width:(int)width height:(int)height {
