@@ -9,19 +9,21 @@
 #import "RGB24ImageViewController.h"
 
 @interface RGB24ImageViewController ()
-
+{
+    GLuint _textureIDArray[1];
+}
 @property (nonatomic)GLuint program;
-@property (nonatomic)GLuint textureID;
-@property (nonatomic)int textureVarIndex;
+@property (nonatomic)int sampleVarIndex;
 @property (nonatomic, strong) NSData *fileData;
 @end
 
 @implementation RGB24ImageViewController
 
 - (void)dealloc {
-    if (self.textureID) {
-        glDeleteTextures(1, &_textureID);
-    }
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+
+    glDeleteTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
     
     if (self.program) {
         glDeleteProgram(self.program);
@@ -41,8 +43,11 @@
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self draw];
-    
-    [self performSelector:@selector(draw) withObject:nil afterDelay:2];
+}
+
+- (void)rightItemClick {
+    [super rightItemClick];
+    [self draw];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -67,6 +72,7 @@
 }
 
 - (const char *)fragmentShaderDesc {
+    
     static const char str[] = {
         "#version 300 es                                        \n"
         "precision mediump float;                               \n"
@@ -94,21 +100,29 @@
         1.0f, -1.0f, 0.0f,
         1.0f, 1.0f
     };
-    
-    static int i = 0;
-    NSString* filePath = nil;
-    if (i++ %2) {
-        filePath = [[NSBundle mainBundle] pathForResource:@"file2" ofType:@"rgb24"];
-    } else {
-        filePath = [[NSBundle mainBundle] pathForResource:@"file" ofType:@"rgb24"];
-    }
-    
-    GLushort indices[6] = {0, 1, 2, 1, 2, 3};
-    
-    NSData* data = [[NSFileManager defaultManager] contentsAtPath:filePath];
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 480, 288, 0, GL_RGB, GL_UNSIGNED_BYTE, [data bytes]);
 
-    glViewport(0, 0, (GLsizei)self.drawView.drawableWidth, (GLsizei)self.drawView.drawableHeight);
+    static GLushort indices[6] = {0, 1, 2, 1, 2, 3};
+    
+    GLint width = 480;
+    GLint height = 288;
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"file" ofType:@"rgb24"];
+    NSData* data = [[NSFileManager defaultManager] contentsAtPath:filePath];
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, [data bytes]);
+
+    if (self.isFit) {
+        int drawableWidth   = self.drawView.drawableWidth;
+        int drawableHeight  = self.drawView.drawableHeight;
+        float value = (float)width / (float)height;
+        float value2 = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
+        if (value > value2) {
+            drawableHeight = drawableWidth * (CGFloat)height / (CGFloat)width;
+        } else {
+            drawableWidth = drawableHeight * (CGFloat)width / (CGFloat)height;
+        }
+        glViewport((self.drawView.drawableWidth - drawableWidth)/2, (self.drawView.drawableHeight - drawableHeight)/2, (GLsizei)drawableWidth, (GLsizei)drawableHeight);
+    } else {
+        glViewport(0, 0, (GLsizei)self.drawView.drawableWidth, (GLsizei)self.drawView.drawableHeight);
+    }
     
 //    glScissor(0, 0, (GLsizei)self.drawView.drawableWidth/2, (GLsizei)self.drawView.drawableHeight/2);
 //    glEnable(GL_SCISSOR_TEST);
@@ -123,33 +137,24 @@
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), &vertexs[3]);
     
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, self.textureID);
-    
-    glUniform1i(self.textureVarIndex, 0);
+    glBindTexture(GL_TEXTURE_2D, _textureIDArray[0]);
+    glUniform1i(self.sampleVarIndex, 0);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
     
-//    glDisableVertexAttribArray(0);
-//    glDisableVertexAttribArray(1);
-    
-    [self.drawView display];//一定要调用display才能将结果显示出来？？？！！！
+    [self.drawView display];
 }
-
-
-
 
 
 - (void)loadTexture {
     
-    GLuint texture;
-    
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    
-    self.textureID = texture;
+    glGenTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
+    for (int i = 0; i < ARRAY_SIZE(_textureIDArray); i ++) {
+        glBindTexture(GL_TEXTURE_2D, _textureIDArray[i]);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
 }
 
 - (int)setupOpenGL {
@@ -157,7 +162,7 @@
     GLuint program = createProgram([self vertexShaderDesc], [self fragmentShaderDesc]);
     if (program) {
         glClearColor(0, 0, 0, 1);
-        self.textureVarIndex = glGetUniformLocation(program, "uniform_textureID");
+        self.sampleVarIndex = glGetUniformLocation(program, "uniform_textureID");
     }
     return program;
 }

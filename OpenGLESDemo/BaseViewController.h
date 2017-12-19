@@ -9,13 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <OpenGLES/ES3/gl.h>
 #import <GLKit/GLKit.h>
+#import <AVFoundation/AVFoundation.h>
 
-@interface BaseViewController : UIViewController
+@interface BaseViewController : UIViewController{
+    
+}
 
-@property (nonatomic, strong) GLKView   * _Nonnull drawView;
-@property (nonnull, strong) EAGLContext *context;
+@property (nonatomic, strong)   GLKView     *drawView;
+@property (nonatomic, strong)   EAGLContext *context;
+@property (nonatomic)           BOOL        isFit;
 
-- (const char*_Nullable)vertexShaderDesc;
-- (const char*_Nonnull)fragmentShaderDesc;
-
+- (const char*)vertexShaderDesc;
+- (const char*)fragmentShaderDesc;
+- (void)rightItemClick;
 @end

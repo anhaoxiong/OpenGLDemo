@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7639217C1FE8E0E80004501A /* CameraNV12ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7639217B1FE8E0E80004501A /* CameraNV12ViewController.m */; };
+		7639217F1FE90E100004501A /* Camerai420ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7639217E1FE90E100004501A /* Camerai420ViewController.m */; };
 		769B2A751FE7B41B00A73B0E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 769B2A741FE7B41B00A73B0E /* AppDelegate.m */; };
 		769B2A7D1FE7B41B00A73B0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 769B2A7C1FE7B41B00A73B0E /* Assets.xcassets */; };
 		769B2A831FE7B41B00A73B0E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 769B2A821FE7B41B00A73B0E /* main.m */; };
@@ -16,12 +18,15 @@
 		769B2A991FE7BF5900A73B0E /* HXAVCaptureSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 769B2A971FE7BF5800A73B0E /* HXAVCaptureSession.m */; };
 		769B2A9D1FE7C12C00A73B0E /* RGB24ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769B2A9C1FE7C12C00A73B0E /* RGB24ImageViewController.m */; };
 		769B2A9F1FE7C24700A73B0E /* file.rgb24 in Resources */ = {isa = PBXBuildFile; fileRef = 769B2A9E1FE7C24700A73B0E /* file.rgb24 */; };
-		769B2AA31FE828BF00A73B0E /* file2.rgb24 in Resources */ = {isa = PBXBuildFile; fileRef = 769B2AA21FE828BF00A73B0E /* file2.rgb24 */; };
 		769B2AA61FE8ADBD00A73B0E /* CameraBGRAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769B2AA51FE8ADBD00A73B0E /* CameraBGRAViewController.m */; };
 		769B2AA81FE8B73400A73B0E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 769B2AA71FE8B73400A73B0E /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7639217A1FE8E0E80004501A /* CameraNV12ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraNV12ViewController.h; sourceTree = "<group>"; };
+		7639217B1FE8E0E80004501A /* CameraNV12ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraNV12ViewController.m; sourceTree = "<group>"; };
+		7639217D1FE90E100004501A /* Camerai420ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Camerai420ViewController.h; sourceTree = "<group>"; };
+		7639217E1FE90E100004501A /* Camerai420ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Camerai420ViewController.m; sourceTree = "<group>"; };
 		769B2A701FE7B41A00A73B0E /* OpenGLESDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenGLESDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		769B2A731FE7B41B00A73B0E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		769B2A741FE7B41B00A73B0E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -40,7 +45,6 @@
 		769B2A9B1FE7C12C00A73B0E /* RGB24ImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGB24ImageViewController.h; sourceTree = "<group>"; };
 		769B2A9C1FE7C12C00A73B0E /* RGB24ImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RGB24ImageViewController.m; sourceTree = "<group>"; };
 		769B2A9E1FE7C24700A73B0E /* file.rgb24 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = file.rgb24; sourceTree = "<group>"; };
-		769B2AA21FE828BF00A73B0E /* file2.rgb24 */ = {isa = PBXFileReference; lastKnownFileType = file; path = file2.rgb24; sourceTree = "<group>"; };
 		769B2AA41FE8ADBD00A73B0E /* CameraBGRAViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraBGRAViewController.h; sourceTree = "<group>"; };
 		769B2AA51FE8ADBD00A73B0E /* CameraBGRAViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraBGRAViewController.m; sourceTree = "<group>"; };
 		769B2AA71FE8B73400A73B0E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -88,7 +92,10 @@
 				769B2A9C1FE7C12C00A73B0E /* RGB24ImageViewController.m */,
 				769B2AA41FE8ADBD00A73B0E /* CameraBGRAViewController.h */,
 				769B2AA51FE8ADBD00A73B0E /* CameraBGRAViewController.m */,
-				769B2AA21FE828BF00A73B0E /* file2.rgb24 */,
+				7639217A1FE8E0E80004501A /* CameraNV12ViewController.h */,
+				7639217B1FE8E0E80004501A /* CameraNV12ViewController.m */,
+				7639217D1FE90E100004501A /* Camerai420ViewController.h */,
+				7639217E1FE90E100004501A /* Camerai420ViewController.m */,
 				769B2A9E1FE7C24700A73B0E /* file.rgb24 */,
 				769B2A941FE7B70700A73B0E /* OpenGLUtil.h */,
 				769B2A951FE7B70700A73B0E /* OpenGLUtil.m */,
@@ -161,7 +168,6 @@
 			files = (
 				769B2A7D1FE7B41B00A73B0E /* Assets.xcassets in Resources */,
 				769B2AA81FE8B73400A73B0E /* Images.xcassets in Resources */,
-				769B2AA31FE828BF00A73B0E /* file2.rgb24 in Resources */,
 				769B2A9F1FE7C24700A73B0E /* file.rgb24 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -176,10 +182,12 @@
 				769B2A831FE7B41B00A73B0E /* main.m in Sources */,
 				769B2A8E1FE7B5C900A73B0E /* BaseViewController.m in Sources */,
 				769B2A9D1FE7C12C00A73B0E /* RGB24ImageViewController.m in Sources */,
+				7639217C1FE8E0E80004501A /* CameraNV12ViewController.m in Sources */,
 				769B2A961FE7B70700A73B0E /* OpenGLUtil.m in Sources */,
 				769B2A8B1FE7B43A00A73B0E /* TableViewController.m in Sources */,
 				769B2A991FE7BF5900A73B0E /* HXAVCaptureSession.m in Sources */,
 				769B2A751FE7B41B00A73B0E /* AppDelegate.m in Sources */,
+				7639217F1FE90E100004501A /* Camerai420ViewController.m in Sources */,
 				769B2AA61FE8ADBD00A73B0E /* CameraBGRAViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

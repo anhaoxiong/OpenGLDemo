@@ -440,7 +440,7 @@
             case kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange:
             case kCVPixelFormatType_420YpCbCr8BiPlanarFullRange:{
                 //source buffer format is nv12
-#if 1
+#if 0
                 [self sampleNV12ToI420Buffer:sampleBuffer];
                 [self.delegate videoDataCallBack:_yuv420buffer len:(int)_width*(int)_height*3/2 width:(int)_width height:(int)_height];
 #else

@@ -11,11 +11,15 @@
 static NSString* strControllers[] = {
     @"RGB24ImageViewController",
     @"CameraBGRAViewController",
+    @"CameraNV12ViewController",
+    @"Camerai420ViewController",
 };
 
 static NSString* strControllerDescs [] = {
     @"从文件file.rgb24中读取rgb数据进行渲染",
-    @""
+    @"对相机采集BGRA格式数据进行渲染",
+    @"对相机采集NV12格式数据进行渲染(需要设置HXAVCaptureSession中数据返回格式为NV12)",
+    @"对相机采集I420格式数据进行渲染(需要设置HXAVCaptureSession中数据返回格式为I420)",
 };
 
 @interface TableViewController ()

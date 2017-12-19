@@ -1,32 +1,34 @@
 //
-//  CameraBGRAViewController.m
+//  CameraNV12ViewController.m
 //  OpenGLESDemo
 //
 //  Created by hxiongan on 2017/12/19.
 //  Copyright © 2017年 hxiongan. All rights reserved.
 //
 
-#import "CameraBGRAViewController.h"
+#import "CameraNV12ViewController.h"
 #import "HXAVCaptureSession.h"
 
-@interface CameraBGRAViewController ()
+@interface CameraNV12ViewController ()
 <
 HXAVCaptureSessionDelegate
 >
 {
-    GLuint _textureIDArray[1];
+    GLuint _textureIDArray[2];
 }
-@property (nonatomic, strong)HXAVCaptureSession *captureSession;
-@property (nonatomic)GLuint program;
-@property (nonatomic)int sampleVarIndex;
+@property (nonatomic, strong) HXAVCaptureSession *captureSession;
+@property (nonatomic) GLuint program;
+@property (nonatomic) int sampleVarIndexY;
+@property (nonatomic) int sampleVarIndexUV;
+@property (nonatomic) BOOL isFit;
 @end
 
-@implementation CameraBGRAViewController
+@implementation CameraNV12ViewController
 
 - (void)dealloc {
-    
+
     glDeleteTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
-    
+
     if (self.program) {
         glDeleteProgram(self.program);
     }
@@ -34,14 +36,13 @@ HXAVCaptureSessionDelegate
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.program = [self setupOpenGL];
     if (self.program) {
         [self loadTexture];
     }
-    
+
     [self setupSession];
-    
     // Do any additional setup after loading the view.
 }
 
@@ -61,7 +62,7 @@ HXAVCaptureSessionDelegate
 }
 
 - (const char *)vertexShaderDesc {
-    
+
     static const char str[] = {
         "#version 300 es                                    \n"
         "layout(location = 0)in vec4 in_position;           \n"
@@ -72,32 +73,37 @@ HXAVCaptureSessionDelegate
         "   v2f_textCoor = in_textCoor;                     \n"
         "}"
     };
-    
+
     return str;
 }
 
 - (const char *)fragmentShaderDesc {
-    
+
     static const char str[] = {
-        "#version 300 es                                        \n"
-        "precision mediump float;                               \n"
-        "in vec2 v2f_textCoor;                                  \n"
-        "uniform sampler2D uniform_textureID;                   \n"
-        "out vec4 out_color;                                    \n"
-        "void main() {                                          \n"
-        "   vec4 tempColor = texture(uniform_textureID, v2f_textCoor);\n"
-        "   out_color.r = tempColor.b;                          \n"
-        "   out_color.g = tempColor.g;                          \n"
-        "   out_color.b = tempColor.r;                          \n"
-        "   out_color.a = tempColor.a;                          \n"
+        "#version 300 es                                            \n"
+        "precision mediump float;                                   \n"
+        "in vec2 v2f_textCoor;                                      \n"
+        "uniform sampler2D uniform_textureIDY;                      \n"
+        "uniform sampler2D uniform_textureIDUV;                     \n"
+        "out vec4 out_color;                                        \n"
+        "void main() {                                              \n"
+        "   vec4 vec_uv = texture(uniform_textureIDUV, v2f_textCoor);  \n"
+        "   float y = texture(uniform_textureIDY, v2f_textCoor).r;  \n"
+        "   y = 1.1643 * (y - 0.0625);                              \n"
+        "   float u = vec_uv.r - 0.5;                               \n"
+        "   float v = vec_uv.g - 0.5;                               \n"
+        "   out_color.r = y + 1.5958*v;                             \n"
+        "   out_color.g = y - 0.39173*u - 0.81290*v;                \n"
+        "   out_color.b = y + 2.017*u;                              \n"
+        "   out_color.a = 1.0;                                      \n"
         "}"
     };
-    
+
     return str;
 }
 
 - (void)draw:(unsigned char *)buffer width:(int)width height:(int)height {
-    
+
     static GLfloat vertexs[] = {
         -1.0f, 1.0f, 0.0f,
         0.0f, 0.0f,
@@ -108,11 +114,9 @@ HXAVCaptureSessionDelegate
         1.0f, -1.0f, 0.0f,
         1.0f, 1.0f
     };
-    
+
     GLushort indices[6] = {0, 1, 2, 1, 2, 3};
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    
+
     if (self.isFit) {
         int drawableWidth   = self.drawView.drawableWidth;
         int drawableHeight  = self.drawView.drawableHeight;
@@ -127,53 +131,56 @@ HXAVCaptureSessionDelegate
     } else {
         glViewport(0, 0, (GLsizei)self.drawView.drawableWidth, (GLsizei)self.drawView.drawableHeight);
     }
-    
-    //    glScissor(0, 0, (GLsizei)self.drawView.drawableWidth/2, (GLsizei)self.drawView.drawableHeight/2);
-    //    glEnable(GL_SCISSOR_TEST);
-    
+
     glClear(GL_COLOR_BUFFER_BIT);
-    
+
     glUseProgram(self.program);
-    
+
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), vertexs);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), &vertexs[3]);
-    
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[0]);
-    
-    glUniform1i(self.sampleVarIndex, 0);
-    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buffer);
+    glUniform1i(self.sampleVarIndexY, 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, _textureIDArray[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG8, width / 2, height / 2, 0, GL_RG, GL_UNSIGNED_BYTE, buffer + width * height);
+    glUniform1i(self.sampleVarIndexUV, 1);
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 
-    [self.drawView display];
+    [self.drawView display];//一定要调用display才能将结果显示出来？？？！！！
 }
 
 - (void)loadTexture {
-    
+
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glGenTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
     for (int i = 0; i < ARRAY_SIZE(_textureIDArray); i ++) {
         glBindTexture(GL_TEXTURE_2D, _textureIDArray[i]);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    
 }
 
 - (int)setupOpenGL {
-    
+
     GLuint program = createProgram([self vertexShaderDesc], [self fragmentShaderDesc]);
     if (program) {
         glClearColor(0, 0, 0, 1);
-        self.sampleVarIndex = glGetUniformLocation(program, "uniform_textureID");
+        self.sampleVarIndexY    = glGetUniformLocation(program, "uniform_textureIDY");
+        self.sampleVarIndexUV   = glGetUniformLocation(program, "uniform_textureIDUV");
     }
+
     return program;
 }
 
 - (void)setupSession {
-    self.captureSession = [[HXAVCaptureSession alloc] initWithPreview:nil delegate:self pixelFormatType:kCVPixelFormatType_32BGRA preset:AVCaptureSessionPreset640x480 frameRate:25];
+    self.captureSession = [[HXAVCaptureSession alloc] initWithPreview:nil delegate:self pixelFormatType:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange preset:AVCaptureSessionPreset640x480 frameRate:25];
 }
 
 - (void)videoDataCallBack:(unsigned char *)pbuffer len:(int)bufferLen width:(int)width height:(int)height {
@@ -181,7 +188,9 @@ HXAVCaptureSessionDelegate
 }
 
 - (void)audioDataCallBack:(unsigned char *)pbuffer len:(int)bufferLen sampleRate:(int)sampleRate channel:(int)channel {
-    
+
 }
 
+
 @end
+

@@ -15,10 +15,11 @@
 
 
 -(void)dealloc{
+    [self.drawView deleteDrawable];
     if (self.context == [EAGLContext currentContext]) {
         [EAGLContext setCurrentContext:nil];
     }
-    printf("\n[dealloc] %s\n", [NSStringFromClass(self.class) UTF8String]);
+    printf("\n [dealloc] %s\n", [NSStringFromClass(self.class) UTF8String]);
 }
 
 - (void)viewDidLoad {
@@ -33,12 +34,23 @@
     [self.view addSubview:self.drawView];
     self.drawView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"click to fit" style:(UIBarButtonItemStylePlain) target:self action:@selector(rightItemClick)];
+
     // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)rightItemClick {
+    self.isFit = !self.isFit;
+    if (self.isFit) {
+        self.navigationItem.rightBarButtonItem.title = @"click to fill";
+    } else {
+        self.navigationItem.rightBarButtonItem.title = @"click to fit";
+    }
 }
 
 - (const char *)vertexShaderDesc {
