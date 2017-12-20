@@ -16,9 +16,9 @@ HXAVCaptureSessionDelegate
 {
     GLuint _textureIDArray[1];
 }
-@property (nonatomic, strong)HXAVCaptureSession *captureSession;
-@property (nonatomic)GLuint program;
-@property (nonatomic)int sampleVarIndex;
+@property (nonatomic, strong) HXAVCaptureSession *captureSession;
+@property (nonatomic) GLuint program;
+@property (nonatomic) int sampleVarIndex;
 @end
 
 @implementation CameraBGRAViewController
@@ -113,25 +113,9 @@ HXAVCaptureSessionDelegate
     
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
     
-    if (self.isFit) {
-        
-        GLint drawableWidth   = (GLint)self.drawView.drawableWidth;
-        GLint drawableHeight  = (GLint)self.drawView.drawableHeight;
-        float divData = (float)width / (float)height;
-        float divView = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
-        if (divData > divView) {
-            drawableHeight = drawableWidth * (CGFloat)height / (CGFloat)width;
-        } else {
-            drawableWidth = drawableHeight * (CGFloat)width / (CGFloat)height;
-        }
-        
-        glViewport((GLint)(self.drawView.drawableWidth - drawableWidth)/2,
-                   (GLint)(self.drawView.drawableHeight - drawableHeight)/2,
-                   (GLsizei)drawableWidth,
-                   (GLsizei)drawableHeight);
-    } else {
-        glViewport(0, 0, (GLsizei)self.drawView.drawableWidth, (GLsizei)self.drawView.drawableHeight);
-    }
+    CGSize drawableSize = [self drawableSizeWithDataWidth:width dataHeight:height];
+
+    glViewport((GLint)(self.drawView.drawableWidth - drawableSize.width)/2, (GLint)(self.drawView.drawableHeight - drawableSize.height)/2, (GLsizei)drawableSize.width, (GLsizei)drawableSize.height);
     
     //    glScissor(0, 0, (GLsizei)self.drawView.drawableWidth/2, (GLsizei)self.drawView.drawableHeight/2);
     //    glEnable(GL_SCISSOR_TEST);

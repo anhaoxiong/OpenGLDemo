@@ -12,9 +12,11 @@
 {
     GLuint _textureIDArray[1];
 }
-@property (nonatomic)GLuint program;
-@property (nonatomic)int sampleVarIndex;
+
+@property (nonatomic) GLuint program;
+@property (nonatomic) int sampleVarIndex;
 @property (nonatomic, strong) NSData *fileData;
+
 @end
 
 @implementation RGB24ImageViewController
@@ -103,26 +105,13 @@
 
     static GLushort indices[6] = {0, 1, 2, 1, 2, 3};
     
-    GLint width     = 480;
-    GLint height    = 288;
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"file" ofType:@"rgb24"];
     NSData *data    = [[NSFileManager defaultManager] contentsAtPath:filePath];
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, [data bytes]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 480, 288, 0, GL_RGB, GL_UNSIGNED_BYTE, [data bytes]);
 
-    if (self.isFit) {
-        GLint drawableWidth   = (GLint)self.drawView.drawableWidth;
-        GLint drawableHeight  = (GLint)self.drawView.drawableHeight;
-        float divData = (float)width / (float)height;
-        float divView = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
-        if (divData > divView) {
-            drawableHeight = drawableWidth * (CGFloat)height / (CGFloat)width;
-        } else {
-            drawableWidth = drawableHeight * (CGFloat)width / (CGFloat)height;
-        }
-        glViewport((GLint)(self.drawView.drawableWidth - drawableWidth)/2, (GLint)(self.drawView.drawableHeight - drawableHeight)/2, (GLsizei)drawableWidth, (GLsizei)drawableHeight);
-    } else {
-        glViewport(0, 0, (GLsizei)self.drawView.drawableWidth, (GLsizei)self.drawView.drawableHeight);
-    }
+    CGSize drawableSize = [self drawableSizeWithDataWidth:480 dataHeight:288];
+    
+    glViewport((GLint)(self.drawView.drawableWidth - drawableSize.width)/2, (GLint)(self.drawView.drawableHeight - drawableSize.height)/2, (GLsizei)drawableSize.width, (GLsizei)drawableSize.height);
     
 //    glScissor(0, 0, (GLsizei)self.drawView.drawableWidth/2, (GLsizei)self.drawView.drawableHeight/2);
 //    glEnable(GL_SCISSOR_TEST);

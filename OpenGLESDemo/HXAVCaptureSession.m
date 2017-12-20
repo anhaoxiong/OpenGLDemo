@@ -412,7 +412,7 @@
     }
     
     for (int i = 0; i < bufferHeight; i ++) {
-        memcpy(_yuv420buffer + i * bufferWidth * 4, address + i * perRowLen, perRowLen);
+        memcpy(_yuv420buffer + i * bufferWidth * 4, address + i * perRowLen, bufferWidth * 4);
     }
     
     CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
@@ -440,13 +440,12 @@
             case kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange:
             case kCVPixelFormatType_420YpCbCr8BiPlanarFullRange:{
                 //source buffer format is nv12
-#if 0
-                [self sampleNV12ToI420Buffer:sampleBuffer];
+                if (self.isNeedI420) {
+                    [self sampleNV12ToI420Buffer:sampleBuffer];
+                } else {
+                    [self sampleNV12ToNV12Buffer:sampleBuffer];
+                }
                 [self.delegate videoDataCallBack:_yuv420buffer len:(int)_width*(int)_height*3/2 width:(int)_width height:(int)_height];
-#else
-                [self sampleNV12ToNV12Buffer:sampleBuffer];
-                [self.delegate videoDataCallBack:_yuv420buffer len:(int)_width*(int)_height*3/2 width:(int)_width height:(int)_height];
-#endif
             }
                 break;
                 

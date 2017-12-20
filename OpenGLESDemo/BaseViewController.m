@@ -53,6 +53,24 @@
     }
 }
 
+- (CGSize)drawableSizeWithDataWidth:(NSInteger)width dataHeight:(NSInteger)height {
+    
+    if (self.isFit) {
+        GLint drawableWidth   = (GLint)self.drawView.drawableWidth;
+        GLint drawableHeight  = (GLint)self.drawView.drawableHeight;
+        float divData = (float)width / (float)height;
+        float divView = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
+        if (divData > divView) {
+            drawableHeight = drawableWidth * (CGFloat)height / (CGFloat)width;
+        } else {
+            drawableWidth = drawableHeight * (CGFloat)width / (CGFloat)height;
+        }
+        return CGSizeMake(drawableWidth, drawableHeight);
+    } else {
+        return CGSizeMake(self.drawView.drawableWidth, self.drawView.drawableHeight);
+    }
+}
+
 - (const char *)vertexShaderDesc {
     return NULL;
 }

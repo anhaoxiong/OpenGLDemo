@@ -22,4 +22,5 @@
 - (const char*)vertexShaderDesc;
 - (const char*)fragmentShaderDesc;
 - (void)rightItemClick;
+- (CGSize)drawableSizeWithDataWidth:(NSInteger)width dataHeight:(NSInteger)height;
 @end

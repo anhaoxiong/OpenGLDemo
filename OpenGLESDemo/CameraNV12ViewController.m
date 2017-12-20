@@ -16,11 +16,12 @@ HXAVCaptureSessionDelegate
 {
     GLuint _textureIDArray[2];
 }
+
 @property (nonatomic, strong) HXAVCaptureSession *captureSession;
 @property (nonatomic) GLuint program;
 @property (nonatomic) int sampleVarIndexY;
 @property (nonatomic) int sampleVarIndexUV;
-@property (nonatomic) BOOL isFit;
+
 @end
 
 @implementation CameraNV12ViewController
@@ -117,23 +118,10 @@ HXAVCaptureSessionDelegate
 
     GLushort indices[6] = {0, 1, 2, 1, 2, 3};
 
-    if (self.isFit) {
-        GLint drawableWidth   = (GLint)self.drawView.drawableWidth;
-        GLint drawableHeight  = (GLint)self.drawView.drawableHeight;
-        float divData = (float)width / (float)height;
-        float divView = (CGFloat)self.drawView.drawableWidth / (CGFloat)self.drawView.drawableHeight;
-        if (divData > divView) {
-            drawableHeight = drawableWidth * (CGFloat)height / (CGFloat)width;
-        } else {
-            drawableWidth = drawableHeight * (CGFloat)width / (CGFloat)height;
-        }
-        glViewport((GLint)(self.drawView.drawableWidth - drawableWidth)/2,
-                   (GLint)(self.drawView.drawableHeight - drawableHeight)/2,
-                   (GLsizei)drawableWidth,
-                   (GLsizei)drawableHeight);
-    } else {
-        glViewport(0, 0, (GLsizei)self.drawView.drawableWidth, (GLsizei)self.drawView.drawableHeight);
-    }
+    
+    CGSize drawableSize = [self drawableSizeWithDataWidth:width dataHeight:height];
+    
+    glViewport((GLint)(self.drawView.drawableWidth - drawableSize.width)/2, (GLint)(self.drawView.drawableHeight - drawableSize.height)/2, (GLsizei)drawableSize.width, (GLsizei)drawableSize.height);
 
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -184,6 +172,7 @@ HXAVCaptureSessionDelegate
 
 - (void)setupSession {
     self.captureSession = [[HXAVCaptureSession alloc] initWithPreview:nil delegate:self pixelFormatType:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange preset:AVCaptureSessionPreset640x480 frameRate:25];
+    self.captureSession.isNeedI420 = NO;
 }
 
 - (void)videoDataCallBack:(unsigned char *)pbuffer len:(int)bufferLen width:(int)width height:(int)height {

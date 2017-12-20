@@ -24,6 +24,8 @@
 
 @property(nonatomic, readonly, getter=isFlashLightOn)BOOL flashLightOn;
 
+@property(nonatomic)BOOL isNeedI420;
+
 -(instancetype)initWithPreview:(UIView*)preview
                       delegate:(id<HXAVCaptureSessionDelegate>)delegate
                pixelFormatType:(NSInteger)pixelFormat

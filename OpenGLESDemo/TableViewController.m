@@ -18,8 +18,8 @@ static NSString* strControllers[] = {
 static NSString* strControllerDescs [] = {
     @"从文件file.rgb24中读取rgb数据进行渲染",
     @"对相机采集BGRA格式数据进行渲染",
-    @"对相机采集NV12格式数据进行渲染(需要设置HXAVCaptureSession中数据返回格式为NV12)",
-    @"对相机采集I420格式数据进行渲染(需要设置HXAVCaptureSession中数据返回格式为I420)",
+    @"对相机采集NV12格式数据进行渲染",
+    @"对相机采集I420格式数据进行渲染",
 };
 
 @interface TableViewController ()
@@ -50,7 +50,7 @@ static NSString* strControllerDescs [] = {
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return sizeof(strControllers) / sizeof(strControllers[0]);
+    return ARRAY_SIZE(strControllers);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
