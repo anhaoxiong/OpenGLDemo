@@ -18,7 +18,7 @@ HXAVCaptureSessionDelegate
 }
 @property (nonatomic, strong) HXAVCaptureSession *captureSession;
 @property (nonatomic) GLuint program;
-@property (nonatomic) int sampleVarIndex;
+@property (nonatomic) int sample2DVarIndex;
 @end
 
 @implementation CameraBGRAViewController
@@ -131,7 +131,7 @@ HXAVCaptureSessionDelegate
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[0]);
-    glUniform1i(self.sampleVarIndex, 0);
+    glUniform1i(self.sample2DVarIndex, 0);
     
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 
@@ -144,8 +144,8 @@ HXAVCaptureSessionDelegate
     glGenTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
     for (int i = 0; i < ARRAY_SIZE(_textureIDArray); i ++) {
         glBindTexture(GL_TEXTURE_2D, _textureIDArray[i]);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);//GL_LINEAR显示效果优于GL_NEAREST，但是GL_LINEAR也消耗更多性能
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 }
 
@@ -154,13 +154,13 @@ HXAVCaptureSessionDelegate
     GLuint program = createProgram([self vertexShaderDesc], [self fragmentShaderDesc]);
     if (program) {
         glClearColor(0, 0, 0, 1);
-        self.sampleVarIndex = glGetUniformLocation(program, "uniform_textureID");
+        self.sample2DVarIndex = glGetUniformLocation(program, "uniform_textureID");
     }
     return program;
 }
 
 - (void)setupSession {
-    self.captureSession = [[HXAVCaptureSession alloc] initWithPreview:nil delegate:self pixelFormatType:kCVPixelFormatType_32BGRA preset:AVCaptureSessionPreset1920x1080 frameRate:25];
+    self.captureSession = [[HXAVCaptureSession alloc] initWithPreview:nil delegate:self pixelFormatType:kCVPixelFormatType_32BGRA preset:AVCaptureSessionPreset640x480 frameRate:25];
 }
 
 - (void)videoDataCallBack:(unsigned char *)pbuffer len:(int)bufferLen width:(int)width height:(int)height {

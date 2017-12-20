@@ -19,8 +19,8 @@ HXAVCaptureSessionDelegate
 
 @property (nonatomic, strong) HXAVCaptureSession *captureSession;
 @property (nonatomic) GLuint program;
-@property (nonatomic) int sampleVarIndexY;
-@property (nonatomic) int sampleVarIndexUV;
+@property (nonatomic) int sample2DVarIndexY;
+@property (nonatomic) int sample2DVarIndexUV;
 
 @end
 
@@ -135,12 +135,12 @@ HXAVCaptureSessionDelegate
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[0]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buffer);
-    glUniform1i(self.sampleVarIndexY, 0);
+    glUniform1i(self.sample2DVarIndexY, 0);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG8, width / 2, height / 2, 0, GL_RG, GL_UNSIGNED_BYTE, buffer + width * height);
-    glUniform1i(self.sampleVarIndexUV, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG8, width >> 1, height >> 1, 0, GL_RG, GL_UNSIGNED_BYTE, buffer + width * height);
+    glUniform1i(self.sample2DVarIndexUV, 1);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 
@@ -153,8 +153,8 @@ HXAVCaptureSessionDelegate
     glGenTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
     for (int i = 0; i < ARRAY_SIZE(_textureIDArray); i ++) {
         glBindTexture(GL_TEXTURE_2D, _textureIDArray[i]);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);//GL_LINEAR显示效果优于GL_NEAREST，但是GL_LINEAR也消耗更多性能
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 }
 
@@ -163,8 +163,8 @@ HXAVCaptureSessionDelegate
     GLuint program = createProgram([self vertexShaderDesc], [self fragmentShaderDesc]);
     if (program) {
         glClearColor(0, 0, 0, 1);
-        self.sampleVarIndexY    = glGetUniformLocation(program, "uniform_textureIDY");
-        self.sampleVarIndexUV   = glGetUniformLocation(program, "uniform_textureIDUV");
+        self.sample2DVarIndexY    = glGetUniformLocation(program, "uniform_textureIDY");
+        self.sample2DVarIndexUV   = glGetUniformLocation(program, "uniform_textureIDUV");
     }
 
     return program;

@@ -13,6 +13,7 @@ static NSString* strControllers[] = {
     @"CameraBGRAViewController",
     @"CameraNV12ViewController",
     @"Camerai420ViewController",
+    @"CameraNV12ViewController2",
 };
 
 static NSString* strControllerDescs [] = {
@@ -20,6 +21,7 @@ static NSString* strControllerDescs [] = {
     @"对相机采集BGRA格式数据进行渲染",
     @"对相机采集NV12格式数据进行渲染",
     @"对相机采集I420格式数据进行渲染",
+    @"与 CameraNV12ViewController 相比，Controller2 用了VBO/VAO",
 };
 
 @interface TableViewController ()

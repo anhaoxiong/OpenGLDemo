@@ -19,9 +19,9 @@ HXAVCaptureSessionDelegate
 
 @property (nonatomic, strong) HXAVCaptureSession *captureSession;
 @property (nonatomic) GLuint program;
-@property (nonatomic) int sampleVarIndexY;
-@property (nonatomic) int sampleVarIndexU;
-@property (nonatomic) int sampleVarIndexV;
+@property (nonatomic) int sample2DVarIndexY;
+@property (nonatomic) int sample2DVarIndexU;
+@property (nonatomic) int sample2DVarIndexV;
 
 @end
 
@@ -119,7 +119,6 @@ HXAVCaptureSessionDelegate
     
     GLushort indices[6] = {0, 1, 2, 1, 2, 3};
     
-    
     CGSize drawableSize = [self drawableSizeWithDataWidth:width dataHeight:height];
     
     glViewport((GLint)(self.drawView.drawableWidth - drawableSize.width)/2, (GLint)(self.drawView.drawableHeight - drawableSize.height)/2, (GLsizei)drawableSize.width, (GLsizei)drawableSize.height);
@@ -136,17 +135,17 @@ HXAVCaptureSessionDelegate
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[0]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buffer);
-    glUniform1i(self.sampleVarIndexY, 0);
+    glUniform1i(self.sample2DVarIndexY, 0);
     
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, buffer + width * height);
-    glUniform1i(self.sampleVarIndexU, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width >> 1, height >> 1, 0, GL_RED, GL_UNSIGNED_BYTE, buffer + width * height);
+    glUniform1i(self.sample2DVarIndexU, 1);
     
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[2]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, buffer + width * height * 5 / 4);
-    glUniform1i(self.sampleVarIndexV, 2);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width >> 1, height >> 1, 0, GL_RED, GL_UNSIGNED_BYTE, buffer + width * height * 5 / 4);
+    glUniform1i(self.sample2DVarIndexV, 2);
     
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
     
@@ -159,8 +158,8 @@ HXAVCaptureSessionDelegate
     glGenTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
     for (int i = 0; i < ARRAY_SIZE(_textureIDArray); i ++) {
         glBindTexture(GL_TEXTURE_2D, _textureIDArray[i]);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 }
 
@@ -170,9 +169,9 @@ HXAVCaptureSessionDelegate
     GLuint program = createProgram([self vertexShaderDesc], [self fragmentShaderDesc]);
     if (program) {
         glClearColor(0, 0, 0, 1);
-        self.sampleVarIndexY = glGetUniformLocation(program, "uniform_textureIDY");
-        self.sampleVarIndexU = glGetUniformLocation(program, "uniform_textureIDU");
-        self.sampleVarIndexV = glGetUniformLocation(program, "uniform_textureIDV");
+        self.sample2DVarIndexY = glGetUniformLocation(program, "uniform_textureIDY");
+        self.sample2DVarIndexU = glGetUniformLocation(program, "uniform_textureIDU");
+        self.sample2DVarIndexV = glGetUniformLocation(program, "uniform_textureIDV");
     }
     
     return program;

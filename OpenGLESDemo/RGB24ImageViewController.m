@@ -14,7 +14,7 @@
 }
 
 @property (nonatomic) GLuint program;
-@property (nonatomic) int sampleVarIndex;
+@property (nonatomic) int sample2DVarIndex;
 @property (nonatomic, strong) NSData *fileData;
 
 @end
@@ -127,7 +127,7 @@
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureIDArray[0]);
-    glUniform1i(self.sampleVarIndex, 0);
+    glUniform1i(self.sample2DVarIndex, 0);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
     
@@ -151,7 +151,7 @@
     GLuint program = createProgram([self vertexShaderDesc], [self fragmentShaderDesc]);
     if (program) {
         glClearColor(0, 0, 0, 1);
-        self.sampleVarIndex = glGetUniformLocation(program, "uniform_textureID");
+        self.sample2DVarIndex = glGetUniformLocation(program, "uniform_textureID");
     }
     return program;
 }

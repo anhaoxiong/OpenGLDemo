@@ -24,6 +24,8 @@
 	<string>privacy-sensitive</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>privacy-sensitive</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

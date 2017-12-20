@@ -25,6 +25,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSLog(@"glGetString(GL_VENDOR) = %s", glGetString(GL_VENDOR));
+    NSLog(@"glGetString(GL_VERSION) = %s", glGetString(GL_VERSION));
+    
     self.context = [[EAGLContext alloc] initWithAPI:(kEAGLRenderingAPIOpenGLES3)];
     [EAGLContext setCurrentContext:self.context];
     
