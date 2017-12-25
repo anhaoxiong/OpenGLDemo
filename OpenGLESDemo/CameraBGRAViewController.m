@@ -96,6 +96,7 @@ HXAVCaptureSessionDelegate
     return str;
 }
 
+
 - (void)draw:(unsigned char *)buffer width:(int)width height:(int)height {
     
     static GLfloat vertexs[] = {
