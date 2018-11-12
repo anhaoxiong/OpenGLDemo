@@ -28,6 +28,7 @@ HXAVCaptureSessionDelegate
     glDeleteTextures(ARRAY_SIZE(_textureIDArray), _textureIDArray);
     
     if (self.program) {
+        
         glDeleteProgram(self.program);
     }
 }
